@@ -1,22 +1,11 @@
-<script>
-  import { h } from 'vue'
+<script setup>
+import { getCurrentInstance } from "vue"; 
 
-  export default {
-    props: {
-      src: {
-        type: String,
-      },
-    },
-
-    setup(props, { attrs }) {
-      return props => {
-        const file = props.src
-
-        return h('i', {
-          ...attrs,
-          class: `fa fa-${file} ${attrs.class || ''}`,
-        })
-      }
-    },
-  }
+const { src } = defineProps({
+  src: String,
+})
 </script>
+
+<template>
+  <i :class="`fa fa-${src} ${$props.class}`"></i>
+</template>
