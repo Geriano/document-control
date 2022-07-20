@@ -73,9 +73,7 @@
           <transition-group name="slide-left">
             <div v-for="(flash, i) in $flashes()" :key="i" :class="(flash.type === 'success' && 'border-green-600') || (flash.type === 'warning' && 'border-yellow-400') || (flash.type === 'info' && 'border-cyan-400') || (flash.type === 'error' && 'border-red-600')" class="w-full flex items-center space-x-2 bg-slate-100 border-l-8 rounded-md shadow-xl p-2">
               <div class="w-full flex-wrap first-letter:capitalize">{{ flash.text }}</div>
-              <button @click.prevent="removeFlashMessage(flash)" class="w-6 h-6 border border-slate-700 rounded-md p-1">
-                <Icon src="times" r="51" g="65" b="85" class="w-full h-full" />
-              </button>
+              <Icon @click.prevent="removeFlashMessage(flash)" src="times" class="px-2 py-1 rounded-md border bg-slate-200 hover:bg-slate-100 transition-all cursor-pointer" />
             </div>
           </transition-group>
         </div>
