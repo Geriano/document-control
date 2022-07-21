@@ -6,7 +6,7 @@
       <transition name="slide">
         <div v-if="showingSidebar" class="flex-none flex flex-col w-full sm:w-64 h-screen bg-slate-600">
           <div class="flex-none flex items-center w-full h-14 bg-slate-700 shadow-lg">
-            <div class="flex-none w-14 h-14 p-3">
+            <div class="sm:hidden flex-none w-14 h-14 p-3">
               <button @click.prevent="showingSidebar = ! showingSidebar" class="sm:hidden w-full h-full border border-slate-800 rounded-md shadow-md p-1">
                 <Icon src="bars" class="text-slate-700 w-full h-full" />
               </button>
@@ -14,7 +14,7 @@
 
             <h5 class="w-full text-xl text-center font-bold text-gray-300">{{ name }}</h5>
 
-            <div class="flex-none w-14 h-14 p-3">
+            <div class="sm:hidden flex-none w-14 h-14 p-3">
               <!--  -->
             </div>
           </div>
