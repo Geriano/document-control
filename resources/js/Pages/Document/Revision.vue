@@ -93,7 +93,14 @@ const submit = () => {
 <template>
   <DashboardLayout :title="__('Revision')">
     <div class="flex flex-col space-y-2 bg-white rounded-md">
-      <div class="flex items-center space-x-2 bg-slate-200 p-2 rounded-t-md">
+      <div class="flex items-center space-x-1 bg-slate-200 p-2 rounded-t-md">
+        <Link :href="route('document.index')" class="bg-slate-600 hover:bg-slate-700 rounded-md px-3 py-1 text-white text-sm transition-all">
+          <div class="flex items-center space-x-1">
+            <Icon src="caret-left" />
+            <p class="uppercase font-semibold">{{ __('back') }}</p>
+          </div>
+        </Link>
+        
         <button @click.prevent="store" class="bg-green-600 hover:bg-green-700 rounded-md px-3 py-1 text-sm text-white transition-all">
           <div class="flex items-center space-x-1">
             <Icon src="plus" />
