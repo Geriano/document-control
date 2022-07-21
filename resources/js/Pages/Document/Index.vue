@@ -105,13 +105,26 @@ const submit = () => {
       <div class="flex flex-col space-y-4 p-4">
         <DataTable v-if="a" :url="route('api.v1.document.paginate')" :sticky="true">
           <template v-slot:thead="table">
-            <tr>
+            <tr class="bg-slate-100">
+              <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap px-1 py-2">no</Th>
+              <Th :table="table" :sort="true" name="name" class="border border-slate-200 text-center whitespace-nowrap px-3 py-2">{{ __('name') }}</Th>
+              <Th :table="table" :sort="true" name="code" class="border border-slate-200 text-center whitespace-nowrap px-3 py-2">{{ __('code') }}</Th>
+              <Th :table="table" :sort="true" name="max_revision_interval" class="border border-slate-200 text-center whitespace-nowrap px-3 py-2">{{ __('revision interval month') }}</Th>
+              <Th :table="table" :sort="true" name="created_at" class="border border-slate-200 text-center whitespace-nowrap px-3 py-2">{{ __('created at') }}</Th>
+              <Th :table="table" :sort="true" name="updated_at" class="border border-slate-200 text-center whitespace-nowrap px-3 py-2">{{ __('updated at') }}</Th>
+              <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap px-3 py-2">{{ __('last revision') }}</Th>
+              <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap px-3 py-2">{{ __('action') }}</Th>
+            </tr>
+          </template>
+
+          <template v-slot:tfoot="table">
+            <tr class="bg-slate-100">
               <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">no</Th>
-              <Th :table="table" :sort="true" name="name" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('name') }}</Th>
-              <Th :table="table" :sort="true" name="code" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('code') }}</Th>
-              <Th :table="table" :sort="true" name="max_revision_interval" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('revision interval month') }}</Th>
-              <Th :table="table" :sort="true" name="created_at" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('created at') }}</Th>
-              <Th :table="table" :sort="true" name="updated_at" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('updated at') }}</Th>
+              <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('name') }}</Th>
+              <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('code') }}</Th>
+              <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('revision interval month') }}</Th>
+              <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('created at') }}</Th>
+              <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('updated at') }}</Th>
               <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('last revision') }}</Th>
               <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('action') }}</Th>
             </tr>
@@ -158,19 +171,6 @@ const submit = () => {
               <td colspan="1000" class="text-5xl font-semibold text-center p-4 lowercase first-letter:capitalize">
                 {{ __('there are not data available :\'(') }}
               </td>
-            </tr>
-          </template>
-
-          <template v-slot:tfoot="table">
-            <tr>
-              <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">no</Th>
-              <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('name') }}</Th>
-              <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('code') }}</Th>
-              <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('revision interval month') }}</Th>
-              <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('created at') }}</Th>
-              <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('updated at') }}</Th>
-              <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('last revision') }}</Th>
-              <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('action') }}</Th>
             </tr>
           </template>
         </DataTable>

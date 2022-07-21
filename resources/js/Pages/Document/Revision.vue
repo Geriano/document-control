@@ -112,11 +112,22 @@ const submit = () => {
       <div class="flex flex-col space-y-4 p-4">
         <DataTable v-if="a" :url="route('api.v1.revision.paginate', document.id)" :sticky="true">
           <template v-slot:thead="table">
-            <tr>
+            <tr class="bg-slate-100">
               <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">no</Th>
               <Th :table="table" :sort="true" name="code" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('code') }}</Th>
               <Th :table="table" :sort="true" name="created_at" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('created at') }}</Th>
               <Th :table="table" :sort="true" name="updated_at" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('updated at') }}</Th>
+              <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('expired at') }}</Th>
+              <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('action') }}</Th>
+            </tr>
+          </template>
+
+          <template v-slot:tfoot="table">
+            <tr class="bg-slate-100">
+              <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">no</Th>
+              <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('code') }}</Th>
+              <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('created at') }}</Th>
+              <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('updated at') }}</Th>
               <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('expired at') }}</Th>
               <Th :table="table" :sort="false" class="border border-slate-200 text-center whitespace-nowrap py-2">{{ __('action') }}</Th>
             </tr>
