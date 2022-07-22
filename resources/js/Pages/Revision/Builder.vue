@@ -7,26 +7,26 @@ import Parent from './Parent.vue'
 
 export default defineComponent({
   props: {
-    procedurs: Array,
+    procedures: Array,
     refresh: Function,
     edit: Function,
   },
 
   data: () => ({
-    procedurOnDrag: null,
+    procedureOnDrag: null,
   }),
 
   setup(props, attrs) {
     return props => {
       const self = getCurrentInstance()
-      const { procedurs, refresh, edit } = props
+      const { procedures, refresh, edit } = props
 
-      const drag = procedur => {
-        self.procedurOnDrag = procedur
+      const drag = procedure => {
+        self.procedureOnDrag = procedure
       }
 
       const drop = drop => {
-        const drag = self.procedurOnDrag
+        const drag = self.procedureOnDrag
 
         if (!drag)
           return
@@ -42,29 +42,29 @@ export default defineComponent({
         useForm({
           drag: drag.id,
           drop: drop.id,
-        }).patch(route('procedur.drill'))
+        }).patch(route('procedure.drill'))
       }
 
-      const generate = procedur => {
-        if (procedur.childs?.length) {
+      const generate = procedure => {
+        if (procedure.childs?.length) {
           return h(Parent, {
             ...attrs,
-            procedur,
-            childs: procedur.childs,
+            procedure,
+            childs: procedure.childs,
             refresh,
             drag,
             drop,
             edit,
-          }, procedur.childs.map(child => generate(child)))
+          }, procedure.childs.map(child => generate(child)))
         }
 
-        return h(Child, { ...attrs, procedur, refresh, drag, drop, edit, })
+        return h(Child, { ...attrs, procedure, refresh, drag, drop, edit, })
       }
 
       return h('div', {
         ...attrs,
         class: 'flex flex-col space-y-1',
-      }, procedurs.map(procedur => generate(procedur)))
+      }, procedures.map(procedure => generate(procedure)))
     }
   },
 })

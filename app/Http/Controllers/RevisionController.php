@@ -51,9 +51,9 @@ class RevisionController extends Controller
      * @param \App\Models\Revision $revision
      * @return \Illuminate\Http\Response
      */
-    public function procedurs(Revision $revision)
+    public function procedures(Revision $revision)
     {
-        return $revision->procedurs;
+        return $revision->procedures;
     }
 
     /**

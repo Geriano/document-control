@@ -21,7 +21,7 @@ const form = useForm({
   name: '',
   revision_id: revision.id,
 })
-const procedurs = ref([])
+const procedures = ref([])
 
 const show = () => {
   open.value = true
@@ -37,8 +37,8 @@ const close = () => {
 
 const fetch = async () => {
   try {
-    const response = await axios.get(route('api.v1.revision.procedurs', revision.id))
-    procedurs.value = response.data
+    const response = await axios.get(route('api.v1.revision.procedures', revision.id))
+    procedures.value = response.data
   } catch (e) {
     const response = await Swal.fire({
       title: 'Are you want to try again?',
@@ -53,7 +53,7 @@ const fetch = async () => {
 }
 
 const store = () => {
-  return form.post(route('procedur.store'), {
+  return form.post(route('procedure.store'), {
     onSuccess: () => {
       close()
       fetch()
@@ -63,15 +63,15 @@ const store = () => {
   })
 }
 
-const edit = procedur => {
-  form.id = procedur.id
-  form.name = procedur.name
+const edit = procedure => {
+  form.id = procedure.id
+  form.name = procedure.name
 
   show()
 }
 
 const update = () => {
-  return form.patch(route('procedur.update', form.id), {
+  return form.patch(route('procedure.update', form.id), {
     onSuccess: () => {
       close()
       fetch()
@@ -94,7 +94,7 @@ onMounted(fetch)
 </script>
 
 <template>
-  <DashboardLayout :title="__('Revision procedurs')">
+  <DashboardLayout :title="__('Revision procedures')">
     <div class="flex flex-col rounded-md bg-white">
       <div class="flex items-center space-x-1 bg-slate-200 rounded-t-md p-2">
         <Link :href="route('document.revisions', revision.document_id)" class="bg-slate-600 hover:bg-slate-700 rounded-md px-3 py-1 text-white text-sm transition-all">
@@ -113,7 +113,7 @@ onMounted(fetch)
       </div>
 
       <div class="flex flex-col space-y-4 p-4">
-        <Builder v-if="a" :procedurs="procedurs" :refresh="fetch" :edit="edit" />
+        <Builder v-if="a" :procedures="procedures" :refresh="fetch" :edit="edit" />
       </div>
     </div>
   </DashboardLayout>

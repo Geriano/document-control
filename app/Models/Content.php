@@ -13,15 +13,15 @@ class Content extends Model
      * @var string[]
      */
     protected $fillable = [
-        'procedur_id',
+        'procedure_id',
         'value',
     ];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function procedur()
+    public function procedure()
     {
-        return $this->hasOne(Procedur::class, 'id', 'procedur_id');
+        return $this->hasOne(Procedure::class, 'id', 'procedure_id');
     }
 }

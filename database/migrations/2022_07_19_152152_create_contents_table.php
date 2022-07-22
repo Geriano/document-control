@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('contents', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('procedur_id')
+            $table->foreignId('procedure_id')
                     ->constrained()
                     ->cascadeOnDelete();
             $table->longText('value');

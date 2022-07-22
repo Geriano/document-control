@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Procedur extends Model
+class Procedure extends Model
 {
     use HasFactory;
 
@@ -32,7 +32,7 @@ class Procedur extends Model
      */
     public function parent()
     {
-        return $this->hasOne(Procedur::class, 'id', 'parent_id')->without('child')->withCount('childs');
+        return $this->hasOne(Procedure::class, 'id', 'parent_id')->without('child')->withCount('childs');
     }
 
     /**
@@ -40,7 +40,7 @@ class Procedur extends Model
      */
     public function childs()
     {
-        return $this->hasMany(Procedur::class, 'parent_id', 'id')->orderBy('position', 'asc')->with(['parent', 'childs']);
+        return $this->hasMany(Procedure::class, 'parent_id', 'id')->orderBy('position', 'asc')->with(['parent', 'childs']);
     }
 
     /**
@@ -48,6 +48,6 @@ class Procedur extends Model
      */
     public function content()
     {
-        return $this->hasOne(Content::class, 'procedur_id', 'id');
+        return $this->hasOne(Content::class, 'procedure_id', 'id');
     }
 }

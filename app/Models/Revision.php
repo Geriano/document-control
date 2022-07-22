@@ -45,9 +45,9 @@ class Revision extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function procedurs()
+    public function procedures()
     {
-        return $this->hasMany(Procedur::class, 'revision_id', 'id')
+        return $this->hasMany(Procedure::class, 'revision_id', 'id')
                     ->orderBy('position')
                     ->whereNull('parent_id')
                     ->with(['childs'])

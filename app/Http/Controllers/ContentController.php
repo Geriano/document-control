@@ -36,11 +36,11 @@ class ContentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'procedur_id' => 'required|integer|exists:procedurs,id',
+            'procedure_id' => 'required|integer|exists:procedures,id',
             'value' => 'required|string',
         ]);
 
-        $content = Content::updateOrCreate(['procedur_id' => $request->procedur_id], [
+        $content = Content::updateOrCreate(['procedure_id' => $request->procedure_id], [
             'value' => $request->input('value'),
         ]);
 

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Procedur;
+use App\Models\Procedure;
 use App\Models\Revision;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class ProcedurController extends Controller
+class ProcedureController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -42,34 +42,34 @@ class ProcedurController extends Controller
             'name' => 'required|string',
         ]);
 
-        $procedur = Procedur::create([
+        $procedure = Procedure::create([
             'name' => $request->name,
             'revision_id' => $request->revision_id, 
-            'position' => Procedur::where('revision_id', $request->revision_id)
+            'position' => Procedure::where('revision_id', $request->revision_id)
                                     ->whereNull('parent_id')
                                     ->count() + 1,
         ]);
 
-        if ($procedur) {
+        if ($procedure) {
             return redirect()->back()->with('success', __(
-                'procedur `:name` has been created', [
-                    'name' => $procedur->name,
+                'procedure `:name` has been created', [
+                    'name' => $procedure->name,
                 ],
             ));
         }
 
         return redirect()->back()->with('error', __(
-            'can\'t create procedur',
+            'can\'t create procedure',
         ));
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Procedur  $procedur
+     * @param  \App\Models\Procedure  $procedure
      * @return \Illuminate\Http\Response
      */
-    public function show(Procedur $procedur)
+    public function show(Procedure $procedure)
     {
         //
     }
@@ -77,14 +77,14 @@ class ProcedurController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Procedur  $procedur
+     * @param  \App\Models\Procedure  $procedure
      * @return \Illuminate\Http\Response
      */
-    public function edit(Procedur $procedur)
+    public function edit(Procedure $procedure)
     {
-        return Inertia::render('Procedur/Edit')->with([
-            'procedur' => $procedur,
-            'content' => $procedur->content,
+        return Inertia::render('Procedure/Edit')->with([
+            'procedure' => $procedure,
+            'content' => $procedure->content,
         ]);
     }
 
@@ -92,59 +92,59 @@ class ProcedurController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Procedur  $procedur
+     * @param  \App\Models\Procedure  $procedure
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Procedur $procedur)
+    public function update(Request $request, Procedure $procedure)
     {
         $request->validate([
             'name' => 'string|required',
         ]);
 
-        if ($procedur->update([ 'name' => $request->name ])) {
+        if ($procedure->update([ 'name' => $request->name ])) {
             return redirect()->back()->with('success', __(
-                'procedur has been updated',
+                'procedure has been updated',
             ));
         }
 
         return redirect()->back()->with('error', __(
-            'can\'t update procedur',
+            'can\'t update procedure',
         ));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Procedur  $procedur
+     * @param  \App\Models\Procedure  $procedure
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Procedur $procedur)
+    public function destroy(Procedure $procedure)
     {
-        if ($procedur->delete()) {
-            Procedur::where('revision_id', $procedur->revision_id)
-                    ->where('parent_id', $procedur->parent_id)
-                    ->where('position', '>=', $procedur->position)
+        if ($procedure->delete()) {
+            Procedure::where('revision_id', $procedure->revision_id)
+                    ->where('parent_id', $procedure->parent_id)
+                    ->where('position', '>=', $procedure->position)
                     ->decrement('position');
 
             return redirect()->back()->with('success', __(
-                'procedur `:name` has been deleted', [
-                    'name' => $procedur->name,
+                'procedure `:name` has been deleted', [
+                    'name' => $procedure->name,
                 ]
             ));
         }
 
         return redirect()->back()->with('error', __(
-            'can\'t delete procedur',
+            'can\'t delete procedure',
         ));
     }
 
     /**
-     * @param \App\Models\Procedur $procedur
+     * @param \App\Models\Procedure $procedure
      * @return \Illuminate\Http\Response
      */
-    public function left(Procedur $procedur)
+    public function left(Procedure $procedure)
     {
-        $parent = $procedur->parent;
+        $parent = $procedure->parent;
 
         if (!$parent) {
             return redirect()->back()->with('error', __(
@@ -152,17 +152,17 @@ class ProcedurController extends Controller
             ));
         }
 
-        Procedur::where('revision_id', $parent->revision_id)
+        Procedure::where('revision_id', $parent->revision_id)
                 ->where('parent_id', $parent->parent_id)
                 ->where('position', '>', $parent->position)
                 ->increment('position');
 
-        Procedur::where('revision_id', $parent->revision_id)
+        Procedure::where('revision_id', $parent->revision_id)
                 ->where('parent_id', $parent->id)
-                ->where('position', '>', $procedur->position)
+                ->where('position', '>', $procedure->position)
                 ->decrement('position');
         
-        $updated = $procedur->update([
+        $updated = $procedure->update([
             'parent_id' => $parent->parent_id,
             'position' => $parent->position + 1,
         ]);
@@ -179,29 +179,29 @@ class ProcedurController extends Controller
     }
 
     /**
-     * @param \App\Models\Procedur $procedur
+     * @param \App\Models\Procedure $procedure
      * @return \Illuminate\Http\Response
      */
-    public function right(Procedur $procedur)
+    public function right(Procedure $procedure)
     {
-        $parent = Procedur::where('revision_id', $procedur->revision_id)
-                            ->where('parent_id', $procedur->parent_id)
-                            ->where('position', $procedur->position - 1)
+        $parent = Procedure::where('revision_id', $procedure->revision_id)
+                            ->where('parent_id', $procedure->parent_id)
+                            ->where('position', $procedure->position - 1)
                             ->first();
 
-        if (! $parent || $procedur->position === 1) {
+        if (! $parent || $procedure->position === 1) {
             return redirect()->back()->with('error', __(
-                'parent procedur not exists',
+                'parent procedure not exists',
             ));
         }
 
         $childs = $parent->childs;
-        $procedur->update([
+        $procedure->update([
             'parent_id' => $parent->id,
             'position' => $childs->count() + 1,
         ]);
 
-        Procedur::where('revision_id', $procedur->revision_id)
+        Procedure::where('revision_id', $procedure->revision_id)
                 ->where('parent_id', $parent->parent_id)
                 ->where('position', '>', $parent->position)
                 ->decrement('position');
@@ -212,14 +212,14 @@ class ProcedurController extends Controller
     }
 
     /**
-     * @param \App\Models\Procedur $procedur
+     * @param \App\Models\Procedure $procedure
      * @return \Illuminate\Http\Response
      */
-    public function up(Procedur $procedur)
+    public function up(Procedure $procedure)
     {
-        $before = Procedur::where('revision_id', $procedur->revision_id)
-                            ->where('parent_id', $procedur->parent_id)
-                            ->where('position', $procedur->position - 1)
+        $before = Procedure::where('revision_id', $procedure->revision_id)
+                            ->where('parent_id', $procedure->parent_id)
+                            ->where('position', $procedure->position - 1)
                             ->first();
 
         if (!$before) {
@@ -228,11 +228,11 @@ class ProcedurController extends Controller
             ));
         }
 
-        Procedur::where('id', $before->id)->update([
-            'position' => $procedur->position,
+        Procedure::where('id', $before->id)->update([
+            'position' => $procedure->position,
         ]);
 
-        Procedur::where('id', $procedur->id)->update([
+        Procedure::where('id', $procedure->id)->update([
             'position' => $before->position,
         ]);
 
@@ -242,14 +242,14 @@ class ProcedurController extends Controller
     }
 
     /**
-     * @param \App\Models\Procedur $procedur
+     * @param \App\Models\Procedure $procedure
      * @return \Illuminate\Http\Response
      */
-    public function down(Procedur $procedur)
+    public function down(Procedure $procedure)
     {
-        $after = Procedur::where('revision_id', $procedur->revision_id)
-                            ->where('parent_id', $procedur->parent_id)
-                            ->where('position', $procedur->position + 1)
+        $after = Procedure::where('revision_id', $procedure->revision_id)
+                            ->where('parent_id', $procedure->parent_id)
+                            ->where('position', $procedure->position + 1)
                             ->first();
 
         if (!$after) {
@@ -258,11 +258,11 @@ class ProcedurController extends Controller
             ));
         }
 
-        Procedur::where('id', $after->id)->update([
-            'position' => $procedur->position,
+        Procedure::where('id', $after->id)->update([
+            'position' => $procedure->position,
         ]);
 
-        Procedur::where('id', $procedur->id)->update([
+        Procedure::where('id', $procedure->id)->update([
             'position' => $after->position,
         ]);
 
@@ -277,11 +277,11 @@ class ProcedurController extends Controller
      */
     public function drill(Request $request)
     {
-        $drag = Procedur::findOrFail($request->drag);
-        $drop = Procedur::findOrFail($request->drop);
+        $drag = Procedure::findOrFail($request->drag);
+        $drop = Procedure::findOrFail($request->drop);
 
         if ($drag->position < $drop->position) {
-            Procedur::where('revision_id', $drag->revision_id)
+            Procedure::where('revision_id', $drag->revision_id)
                         ->where('parent_id', $drag->parent_id)
                         ->where('position', '<=', $drop->position)
                         ->where('id', '!=', $drag->position)
@@ -291,7 +291,7 @@ class ProcedurController extends Controller
                 'position' => $drop->position,
             ]);
         } else {
-            Procedur::where('revision_id', $drag->revision_id)
+            Procedure::where('revision_id', $drag->revision_id)
                         ->where('parent_id', $drag->parent_id)
                         ->where('position', '<=', $drag->position)
                         ->where('id', '!=', $drag->id)

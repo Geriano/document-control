@@ -3,8 +3,8 @@ import { getCurrentInstance } from 'vue'
 import Child from './Child.vue'
 
 const self = getCurrentInstance()
-const { procedur, childs, refresh } = defineProps({
-  procedur: Object,
+const { procedure, childs, refresh } = defineProps({
+  procedure: Object,
   childs: Array,
   refresh: Function,
   drag: Function,
@@ -15,7 +15,7 @@ const { procedur, childs, refresh } = defineProps({
 
 <template>
   <div class="flex flex-col space-y-1">
-    <Child :procedur="procedur" :refresh="refresh" :drag="drag" :drop="drop" :edit="edit" />
+    <Child :procedure="procedure" :refresh="refresh" :drag="drag" :drop="drop" :edit="edit" />
 
     <div class="flex flex-col space-y-1 ml-8">
       <slot />

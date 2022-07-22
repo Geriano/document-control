@@ -11,14 +11,14 @@ import Swal from 'sweetalert2'
 
 const editor = CKSource.Editor
 const self = getCurrentInstance()
-const { procedur, content } = defineProps({
-  procedur: Object,
+const { procedure, content } = defineProps({
+  procedure: Object,
   content: Object,
 })
-const key = `procedur:${procedur.id}`
+const key = `procedure:${procedure.id}`
 
 const form = useForm({
-  procedur_id: procedur.id,
+  procedure_id: procedure.id,
   value: content?.value,
 })
 
@@ -42,7 +42,7 @@ onMounted(getFromStorage)
   <DashboardLayout :title="__('content')">
     <div class="flex flex-col bg-white rounded-md">
       <div class="flex items-center space-x-1 rounded-t-md p-2 bg-slate-200">
-        <Link :href="route('revision.edit', procedur.revision_id)" class="bg-slate-600 hover:bg-slate-700 rounded-md px-3 py-1 text-white text-sm transition-all">
+        <Link :href="route('revision.edit', procedure.revision_id)" class="bg-slate-600 hover:bg-slate-700 rounded-md px-3 py-1 text-white text-sm transition-all">
           <div class="flex items-center space-x-1">
             <Icon src="caret-left" />
             <p class="uppercase font-semibold">{{ __('back') }}</p>
