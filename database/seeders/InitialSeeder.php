@@ -46,6 +46,11 @@ class InitialSeeder extends Seeder
         'name' => 'operator',
         'guard_name' => 'web',
       ]),
+
+      'mr' => Role::create([
+        'name' => 'mr',
+        'guard_name' => 'web',
+      ]),
     ];
     
     $crud = function (string $key) {
@@ -77,6 +82,11 @@ class InitialSeeder extends Seeder
       'roles' => $crud('role'),
       'permissions' => $crud('permission'),
       'menus' => $crud('menu'),
+      'documents' => $crud('document'),
+      'revisions' => $crud('revision'),
+      'contents' => $crud('content'),
+      'document approvers' => $crud('document approver'),
+      'revision approvers' => $crud('revision approver'),
     ];
 
     $password = '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi';
@@ -123,11 +133,41 @@ class InitialSeeder extends Seeder
       'password' => $password,
     ]);
 
+    $mr = User::create([
+      'name' => 'mr',
+      'email' => 'mr1@batch.record',
+      'username' => 'mr1',
+      'password' => $password,
+    ]);
+
     $su->assignRole($roles['superuser']);
     $manager->assignRole($roles['manager']);
     $assisstantManager->assignRole($roles['assistant manager']);
     $supervisor->assignRole($roles['supervisor']);
     $assisstantSupervisor->assignRole($roles['assisstant supervisor']);
     $operator->assignRole($roles['operator']);
+    $mr->assignRole($roles['mr']);
+
+    $roles['mr']->givePermissionTo([
+      'create document',
+      'read document',
+      'update document',
+      'delete document',
+
+      'create revision',
+      'read revision',
+      'update revision',
+      'delete revision',
+      
+      'create document approver',
+      'read document approver',
+      'update document approver',
+      'delete document approver',
+      
+      'create revision approver',
+      'read revision approver',
+      'update revision approver',
+      'delete revision approver',
+    ]);
   }
 }

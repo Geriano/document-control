@@ -15,6 +15,7 @@
 
         <!-- Scripts -->
         @routes
+        <script src="{{ asset('/vendors/ckeditor/all.min.js') }}"></script>
         <script src="{{ mix('js/app.js') }}" defer></script>
     </head>
     <body class="font-sans antialiased">
