@@ -146,5 +146,21 @@ class MenuSeeder extends Seeder
             Permission::where('name', 'update menu')->first()->id,
             Permission::where('name', 'delete menu')->first()->id,
         ]);
+
+        $document = Menu::create([
+            'name' => 'document',
+            'route_or_url' => 'document.index',
+            'icon' => 'newspaper',
+            'active' => true,
+            'position' => 3,
+            'routes' => ['document.*'],
+            'deleteable' => false,
+        ]);
+
+        $document->permissions()->attach(
+            Permission::whereIn('name', [
+                'read document',
+            ])->get()->pluck('id'),
+        );
     }
 }
