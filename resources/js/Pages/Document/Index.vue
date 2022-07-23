@@ -21,6 +21,7 @@ const form = useForm({
 
 const show = () => {
   open.value = true
+  nextTick(() => self.refs.name?.focus())
 }
 
 const close = () => {
@@ -149,6 +150,13 @@ const submit = () => {
                       </div>
                     </button>
 
+                    <button @click.prevent="Inertia.get(route('document.approvers', document.id))" class="bg-orange-600 hover:bg-orange-700 rounded-md px-3 py-1 text-sm transition-all m-[1px] text-white">
+                      <div class="flex items-center space-x-1">
+                        <Icon src="user-cog" />
+                        <p class="uppercase font-semibold">{{ __('approvers') }}</p>
+                      </div>
+                    </button>
+
                     <button @click.prevent="edit(document, refresh)" class="bg-blue-600 hover:bg-blue-700 rounded-md px-3 py-1 text-sm transition-all m-[1px] text-white">
                       <div class="flex items-center space-x-1">
                         <Icon src="edit" />
@@ -190,7 +198,7 @@ const submit = () => {
             <div class="flex flex-col space-y-2">
               <div class="flex items-center space-x-2">
                 <label for="name" class="lowercase first-letter:capitalize w-1/3">{{ __('name') }}</label>
-                <input type="text" name="name" v-model="form.name" class="w-full bg-transparent rounded-md border border-slate-200 px-3 py-1 uppercase" required :placeholder="__('name')">
+                <input type="text" name="name" ref="name" v-model="form.name" class="w-full bg-transparent rounded-md border border-slate-200 px-3 py-1 uppercase" required :placeholder="__('name')">
               </div>
 
               <div v-if="form.errors.name" class="text-sm text-red-500 text-right">{{ form.errors.name }}</div>

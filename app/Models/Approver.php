@@ -13,8 +13,8 @@ class Approver extends Model
      * @var string[]
      */
     protected $fillable = [
-        'approverable_type',
         'approverable_id',
+        'approverable_type',
         'user_id',
         'position',
     ];

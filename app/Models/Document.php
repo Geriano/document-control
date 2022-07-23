@@ -31,7 +31,7 @@ class Document extends Model
      */
     public function approvers()
     {
-        return $this->hasMany(Approver::class, 'approverable')->orderBy('position');
+        return $this->morphMany(Approver::class, 'approverable')->orderBy('position');
     }
 
     /**
@@ -39,7 +39,7 @@ class Document extends Model
      */
     public function approvals()
     {
-        return $this->morphMany(Approval::class, 'approvable')->orderBy('position');
+        return $this->morphMany(Approval::class, 'approvalable')->orderBy('position');
     }
 
     /**

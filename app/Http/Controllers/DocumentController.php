@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Approver;
 use App\Models\Document;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -169,5 +170,83 @@ class DocumentController extends Controller
         return Inertia::render('Document/Revision')->with([
             'document' => $document,
         ]);
+    }
+    
+    /**
+     * @param \App\Models\Document $document
+     * @return \Illuminate\Http\Response
+     */
+    public function approvers(Document $document)
+    {
+        return Inertia::render('Document/Approver')->with([
+            'document' => $document,
+            'approvers' => $document->approvers,
+            'users' => User::where('name', '!=', 'su')->get(['id', 'name']),
+        ]);
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Document $document
+     * @param \App\Models\User $user
+     * @return \Illuminate\Http\Response
+     */
+    public function addApproverFor(Request $request, Document $document, User $user)
+    {
+        $request->validate([
+            'user' => 'required|exists:users,id',
+        ]);
+        
+        $approver = $document->approvers()->create([
+            'user_id' => $user->id,
+            'position' => $document->approvers()->count() + 1,
+        ]);
+
+        if ($approver) {
+            return redirect()->back()->with('success', __(
+                'user `:name` has been added to document approver', [
+                    'name' => $user->name,
+                ],
+            ));
+        }
+
+        return redirect()->back()->with('error', __(
+            'can\'t add approver',
+        ));
+    }
+
+    /**
+     * @param \App\Models\Approver $approver
+     * @param \App\Models\User $user
+     * @return \Illuminate\Http\Response
+     */
+    public function updateApprover(Approver $approver, User $user)
+    {
+        if ($approver->update(['user_id' => $user->id])) {
+            return redirect()->back()->with('success', __(
+                'approver has been updated',
+            ));
+        }
+
+        return redirect()->back()->with('error', __(
+            'can\'t remove approver',
+        ));
+    }
+
+    /**
+     * @param \App\Models\Approver $approver
+     * @return \Illuminate\Http\Response
+     */
+    public function detachApprover(Approver $approver)
+    {
+        if ($approver->delete()) {
+            $approver->approverable->approvers()->where('position', '>', $approver->position)->decrement('position');
+
+            return redirect()->back()->with('success', __(
+                'user `:name` has been removed from document approver', [
+                    'name' => $approver->user->name,
+                ]
+            ));
+        }
     }
 }
