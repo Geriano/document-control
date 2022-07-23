@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('approvals', function (Blueprint $table) {
             $table->id();
             $table->morphs('approvalable');
-            $table->unsignedInteger('position');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->unsignedBigInteger('requester_id');
             $table->timestamp('requested_at');

@@ -13,9 +13,8 @@ class Approval extends Model
      * @var string[]
      */
     protected $fillable = [
-        'approvable_type',
-        'approvable_id',
-        'position',
+        'approvalable_type',
+        'approvalable_id',
         'status',
         'requester_id',
         'requested_at',
@@ -36,7 +35,7 @@ class Approval extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function approvable()
+    public function approvalable()
     {
         return $this->morphTo();
     }
