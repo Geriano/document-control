@@ -23,7 +23,9 @@ return new class extends Migration
                     ->nullable()
                     ->default(null);
             $table->unsignedBigInteger('responder_id');
-            $table->timestamp('responded_at');
+            $table->timestamp('responded_at')
+                    ->nullable()
+                    ->default(null);
             $table->text('responder_note')
                     ->nullable()
                     ->default(null);

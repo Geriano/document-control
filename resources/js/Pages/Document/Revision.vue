@@ -163,7 +163,7 @@ const submit = () => {
 
             <tr v-if="data?.length === 0">
               <td colspan="1000" class="text-5xl font-semibold text-center p-4 lowercase first-letter:capitalize">
-                {{ __('there are not data available :\'(') }}
+                {{ __('there are no data available :\'(') }}
               </td>
             </tr>
           </template>

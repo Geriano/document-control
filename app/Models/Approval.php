@@ -55,4 +55,20 @@ class Approval extends Model
     {
         return $this->hasOne(User::class, 'id', 'responder_id');
     }
+
+    /**
+     * @inheritdoc
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function (Approval $approval) {
+            $approval->requested_at = now();
+        });
+
+        static::updating(function (Approval $approval) {
+            $approval->responded_at = now();
+        });
+    }
 }

@@ -249,4 +249,106 @@ class DocumentController extends Controller
             ));
         }
     }
+
+    /**
+     * @param \App\Models\Document $document
+     * @return \Illuminate\Http\Response
+     */
+    public function approvals(Document $document)
+    {
+        return Inertia::render('Document/Approval')->with([
+            'document' => $document,
+            'approves' => $document->approves,
+            'approvers' => $document->approvers,
+        ]);
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Document $document
+     * @return \Illuminate\Http\Response
+     */
+    public function request(Request $request, Document $document)
+    {
+        if ($document->pending && !$document->rejected) {
+            return redirect()->back()->with('error', __(
+                'document is waiting for response approver',
+            ));
+        }
+
+        if ($document->approved) {
+            return redirect()->back()->with('error', __(
+                'document is already approved',
+            ));
+        }
+
+        $user = $request->user();
+        $approve = $document->approves()->create();
+        $document->approvers->each(function (Approver $approver) use ($document, $approve, $user) {
+            $approve->approvals()->create([
+                'status' => 'pending',
+                'requester_id' => $user->id,
+                'requested_at' => now(),
+                'responder_id' => $approver->user->id,
+            ]);
+        });
+
+        return redirect()->back()->with('success', __(
+            'approval has been requested',
+        ));
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Document $document
+     * @return \Illuminate\Http\Response
+     */
+    public function approve(Request $request, Document $document)
+    {
+        $user = $request->user();
+        $approve = $document->approve;
+
+        if (!$approve) {
+            return redirect()->back()->with('error', __(
+                'nothing to do',
+            ));
+        }
+
+        if ($document->rejected) {
+            return redirect()->back()->with('error', __(
+                'document is rejected',
+            ));
+        }
+
+        if ($document->approved) {
+            return redirect()->back()->with('info', __(
+                'document is already approved',
+            ));
+        }
+        
+        $approval = $approve->approvals()
+                            ->where('status', 'pending')
+                            ->when(!$user->hasRole('superuser'), function (Builder $query) use ($user) {
+                                $query->where('responder_id', $user->id);
+                            })
+                            ->first();
+
+        if ($approval) {
+            if ($approval->update(['status' => 'approved'])) {
+                return redirect()->back()->with('success', __(
+                    'document `:name` successfuly approved', [
+                        'name' => $document->name,
+                    ],
+                ));
+            }
+
+            return redirect()->back()->with('error', __(
+                'can\'t approve document, try again later',
+            ));
+        }
+
+        return redirect()->back()->with('error', __(
+            'can\'t find approval for you',
+        ));
+    }
 }

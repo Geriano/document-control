@@ -16,23 +16,46 @@ use Inertia\Inertia;
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/', fn () => Inertia::render('Dashboard'))->name('dashboard');
-    Route::resource('approver', App\Http\Controllers\ApproverController::class);
+
+    Route::prefix('/approval')->name('approval.')->controller(App\Http\Controllers\ApprovalController::class)->group(function () {
+        Route::get('/documents', 'documents')->name('document.index');
+        Route::post('/documents', 'paginateDocuments')->name('document.paginate');
+        Route::get('/revisions', 'revisions')->name('revision.index');
+        Route::post('/revisions', 'paginateRevisions')->name('revision.paginate');
+    });
     Route::resource('approval', App\Http\Controllers\ApprovalController::class);
+    
+    Route::resource('approver', App\Http\Controllers\ApproverController::class);
+    Route::prefix('/approver')->name('approver.')->controller(App\Http\Controllers\ApproverController::class)->group(function () {
+        Route::patch('/{approver}/up', 'up')->name('up');
+        Route::patch('/{approver}/down', 'down')->name('down');
+    });
+
     Route::resource('document', App\Http\Controllers\DocumentController::class);
-    Route::get('/document/{document}/revisions', [App\Http\Controllers\DocumentController::class, 'revisions'])->name('document.revisions');
-    Route::get('/document/{document}/approvers', [App\Http\Controllers\DocumentController::class, 'approvers'])->name('document.approvers');
-    Route::delete('/document/{approver}/detach', [App\Http\Controllers\DocumentController::class, 'detachApprover'])->name('document.approver.detach');
-    Route::post('/document/{document}/approvers/{user}', [App\Http\Controllers\DocumentController::class, 'addApproverFor'])->name('document.approver.add');
-    Route::patch('/document/{approver}/approvers/{user}', [App\Http\Controllers\DocumentController::class, 'updateApprover'])->name('document.approver.update');
-    Route::get('/document/{document}/approvals', [App\Http\Controllers\DocumentController::class, 'approvals'])->name('document.approvals');
-    Route::post('/document/{document}/request', [App\Http\Controllers\DocumentController::class, 'request'])->name('document.approval.request');
+    Route::prefix('/document')->name('document.')->controller(App\Http\Controllers\DocumentController::class)->group(function () {
+        Route::get('/{document}/revisions', 'revisions')->name('revisions');
+        Route::get('/{document}/approvers', 'approvers')->name('approvers');
+        Route::delete('/{approver}/detach', 'detachApprover')->name('approver.detach');
+        Route::post('/{document}/approvers/{user}', 'addApproverFor')->name('approver.add');
+        Route::patch('/{approver}/approvers/{user}', 'updateApprover')->name('approver.update');
+        Route::get('/{document}/approvals', 'approvals')->name('approvals');
+        Route::post('/{document}/request', 'request')->name('approval.request');
+        Route::patch('/{document}/approve', 'approve')->name('approve');
+        Route::patch('/{document}/reject', 'reject')->name('reject');
+    });
+
     Route::resource('revision', App\Http\Controllers\RevisionController::class);
+
     Route::resource('procedure', App\Http\Controllers\ProcedureController::class);
-    Route::patch('/procedure/{procedure}/left', [App\Http\Controllers\ProcedureController::class, 'left'])->name('procedure.left');
-    Route::patch('/procedure/{procedure}/right', [App\Http\Controllers\ProcedureController::class, 'right'])->name('procedure.right');
-    Route::patch('/procedure/{procedure}/up', [App\Http\Controllers\ProcedureController::class, 'up'])->name('procedure.up');
-    Route::patch('/procedure/{procedure}/down', [App\Http\Controllers\ProcedureController::class, 'down'])->name('procedure.down');
+    Route::prefix('/procedur')->name('procedur.')->controller(App\Http\Controllers\ProcedureController::class)->group(function () {
+        Route::patch('/{procedure}/left', 'left')->name('left');
+        Route::patch('/{procedure}/right', 'right')->name('right');
+        Route::patch('/{procedure}/up', 'up')->name('up');
+        Route::patch('/{procedure}/down', 'down')->name('down');
+    });
+
     Route::patch('/procedure-drill', [App\Http\Controllers\ProcedureController::class, 'drill'])->name('procedure.drill');
+
     Route::resource('content', App\Http\Controllers\ContentController::class);
 });
 

@@ -150,21 +150,28 @@ const submit = () => {
                       </div>
                     </button>
 
-                    <button @click.prevent="Inertia.get(route('document.approvers', document.id))" class="bg-orange-600 hover:bg-orange-700 rounded-md px-3 py-1 text-sm transition-all m-[1px] text-white">
+                    <button v-if="document.approved ? false : (document.rejected ? false : !document.pending)" @click.prevent="Inertia.get(route('document.approvers', document.id))" class="bg-orange-600 hover:bg-orange-700 rounded-md px-3 py-1 text-sm transition-all m-[1px] text-white">
                       <div class="flex items-center space-x-1">
                         <Icon src="user-cog" />
                         <p class="uppercase font-semibold">{{ __('approvers') }}</p>
                       </div>
                     </button>
 
-                    <button @click.prevent="edit(document, refresh)" class="bg-blue-600 hover:bg-blue-700 rounded-md px-3 py-1 text-sm transition-all m-[1px] text-white">
+                    <button v-if="document.approvers_count > 0 && !document.approved" @click.prevent="Inertia.get(route('document.approvals', document.id))" class="bg-cyan-600 hover:bg-cyan-700 rounded-md px-3 py-1 text-sm transition-all m-[1px] text-white">
+                      <div class="flex items-center space-x-1">
+                        <Icon src="user-check" />
+                        <p class="uppercase font-semibold">{{ __('approvals') }}</p>
+                      </div>
+                    </button>
+
+                    <button v-if="document.approved ? false : (document.rejected ? true : !document.pending)" @click.prevent="edit(document, refresh)" class="bg-blue-600 hover:bg-blue-700 rounded-md px-3 py-1 text-sm transition-all m-[1px] text-white">
                       <div class="flex items-center space-x-1">
                         <Icon src="edit" />
                         <p class="uppercase font-semibold">{{ __('edit') }}</p>
                       </div>
                     </button>
 
-                    <button @click.prevent="destroy(document, refresh)" class="bg-red-600 hover:bg-red-700 rounded-md px-3 py-1 text-sm transition-all m-[1px] text-white">
+                    <button v-if="document.approved ? false : (document.rejected ? true : !document.pending)" @click.prevent="destroy(document, refresh)" class="bg-red-600 hover:bg-red-700 rounded-md px-3 py-1 text-sm transition-all m-[1px] text-white">
                       <div class="flex items-center space-x-1">
                         <Icon src="edit" />
                         <p class="uppercase font-semibold">{{ __('delete') }}</p>
@@ -177,7 +184,7 @@ const submit = () => {
 
             <tr v-if="data?.length === 0">
               <td colspan="1000" class="text-5xl font-semibold text-center p-4 lowercase first-letter:capitalize">
-                {{ __('there are not data available :\'(') }}
+                {{ __('there are no data available :\'(') }}
               </td>
             </tr>
           </template>

@@ -24,6 +24,23 @@ class Document extends Model
      */
     protected $with = [
         'revision',
+        'approve',
+    ];
+
+    /**
+     * @var string[]
+     */
+    protected $withCount = [
+        'approvers',
+    ];
+
+    /**
+     * @var string[]
+     */
+    protected $appends = [
+        'pending',
+        'approved',
+        'rejected',
     ];
 
     /**
@@ -39,7 +56,31 @@ class Document extends Model
      */
     public function approvals()
     {
-        return $this->morphMany(Approval::class, 'approvalable')->orderBy('position');
+        return $this->morphMany(Approval::class, 'approvalable')->orderBy('created_at');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
+     */
+    public function approval()
+    {
+        return $this->morphOne(Approval::class, 'approvelable')->orderBy('created_at', 'desc');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function approves()
+    {
+        return $this->morphMany(Approve::class, 'approvable');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
+     */
+    public function approve()
+    {
+        return $this->morphOne(Approve::class, 'approvable')->orderBy('created_at', 'desc');
     }
 
     /**
@@ -56,5 +97,58 @@ class Document extends Model
     public function revision()
     {
         return $this->hasOne(Revision::class, 'document_id', 'id')->orderBy('created_at', 'desc');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    public function pending() : Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if ($approve = $this->approve) {
+                    return $approve->approvals
+                                    ->where('status', '!=', 'rejected')
+                                    ->where('status', 'pending')
+                                    ->isNotEmpty();
+                }
+
+                return false;
+            },
+        );
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    public function rejected() : Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if ($approve = $this->approve) {
+                    return $approve->approvals
+                                    ->where('status', 'rejected')
+                                    ->isNotEmpty();
+                }
+
+                return false;
+            },
+        );
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    public function approved() : Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if ($approve = $this->approve) {
+                    return $approve->approvals->count() === $approve->approvals->where('status', 'approved')->count();
+                }
+
+                return false;
+            },
+        );
     }
 }
