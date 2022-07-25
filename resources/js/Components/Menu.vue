@@ -46,13 +46,7 @@
           return menus.map(menu => {
             const childs = menu.childs
             const pl = size(menu) * 4
-            const href = (() => {
-              try {
-                return route(menu.route_or_url)
-              } catch (e) {
-                return menu.route_or_url
-              }
-            })()
+            const href = route().has(menu.route_or_url) ? route(menu.route_or_url) : menu.route_or_url
 
             if (childs.length) {
               return h(NavLinks, {
