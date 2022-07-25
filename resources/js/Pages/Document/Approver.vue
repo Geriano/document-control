@@ -70,6 +70,9 @@ const detach = async approver => {
   response.isConfirmed && Inertia.delete(route('document.approver.detach', approver.id))
 }
 
+const up = approver => Inertia.patch(route('approver.up', approver.id))
+const down = approver => Inertia.patch(route('approver.down', approver.id))
+
 const rounded = () => {
   const { wrapper } = self.refs
 
@@ -118,8 +121,8 @@ onUpdated(rounded)
           </div>
 
           <div ref="wrapper" class="flex items-center">
-            <Icon v-if="approver.position > 1" src="arrow-up" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 transition-all cursor-pointer" />
-            <Icon v-if="approver.position !== approvers.length" src="arrow-down" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 transition-all cursor-pointer" />
+            <Icon @click.prevent="up(approver)" v-if="approver.position > 1" src="arrow-up" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 transition-all cursor-pointer" />
+            <Icon @click.prevent="down(approver)" v-if="approver.position !== approvers.length" src="arrow-down" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 transition-all cursor-pointer" />
             <Icon @click.prevent="edit(approver)" src="edit" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white transition-all cursor-pointer" />
             <Icon @click.prevent="detach(approver)" src="trash" class="px-2 py-1 bg-red-600 hover:bg-red-600 text-white transition-all cursor-pointer" />
           </div>
