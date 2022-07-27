@@ -53,6 +53,8 @@ const reject = async document => {
 
   response.isConfirmed && useForm({ note: response.value }).patch(route('document.reject', document.id))
 }
+
+Inertia.on('finish', e => fetch())
 </script>
 
 <template>

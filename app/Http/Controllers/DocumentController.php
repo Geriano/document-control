@@ -422,9 +422,9 @@ class DocumentController extends Controller
             }
         }
         
-        $approval = $approve->approvals()
+        $approval = $approve->approvals
                             ->where('status', 'pending')
-                            ->when(!$user->hasRole('superuser'), function (Builder $query) use ($user) {
+                            ->when(!$user->hasRole('superuser'), function ($query) use ($user) {
                                 $query->where('responder_id', $user->id);
                             })
                             ->first();
