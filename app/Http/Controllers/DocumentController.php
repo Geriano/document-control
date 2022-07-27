@@ -351,4 +351,62 @@ class DocumentController extends Controller
             'can\'t find approval for you',
         ));
     }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Document $document
+     * @return \Illuminate\Http\Response
+     */
+    public function reject(Request $request, Document $document)
+    {
+        $request->validate([
+            'note' => 'required|string',
+        ]);
+
+        $user = $request->user();
+        $approve = $document->approve;
+
+        if (!$approve) {
+            return redirect()->back()->with('error', __(
+                'nothing to do',
+            ));
+        }
+
+        if ($document->rejected) {
+            return redirect()->back()->with('error', __(
+                'document already is rejected',
+            ));
+        }
+
+        if ($document->approved) {
+            return redirect()->back()->with('info', __(
+                'document is already approved',
+            ));
+        }
+        
+        $approval = $approve->approvals()
+                            ->where('status', 'pending')
+                            ->when(!$user->hasRole('superuser'), function (Builder $query) use ($user) {
+                                $query->where('responder_id', $user->id);
+                            })
+                            ->first();
+
+        if ($approval) {
+            if ($approval->update(['status' => 'rejected', 'responder_note' => $request->note])) {
+                return redirect()->back()->with('success', __(
+                    'document `:name` successfuly rejected', [
+                        'name' => $document->name,
+                    ],
+                ));
+            }
+
+            return redirect()->back()->with('error', __(
+                'can\'t reject document, try again later',
+            ));
+        }
+
+        return redirect()->back()->with('error', __(
+            'can\'t find approval for you',
+        ));
+    }
 }

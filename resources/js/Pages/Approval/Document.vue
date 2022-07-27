@@ -6,6 +6,7 @@ import Th from '@/Components/DataTable/Th.vue'
 import Icon from '@/Components/Icon.vue'
 import { Inertia } from '@inertiajs/inertia';
 import Swal from 'sweetalert2';
+import { useForm } from '@inertiajs/inertia-vue3';
 
 const self = getCurrentInstance()
 const table = ref({
@@ -50,7 +51,7 @@ const reject = async document => {
     },
   })
 
-  response.isConfirmed && Inertia.delete(route('document.reject', document.id))
+  response.isConfirmed && useForm({ note: response.value }).patch(route('document.reject', document.id))
 }
 </script>
 
