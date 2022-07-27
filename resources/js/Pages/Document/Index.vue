@@ -143,14 +143,14 @@ const submit = () => {
               <td class="border border-slate-200 px-2 py-1">
                 <div class="flex items-center justify-center">
                   <div class="flex-wrap w-fit">
-                    <button @click.prevent="Inertia.get(route('document.revisions', document.id))" class="bg-emerald-600 hover:bg-emerald-700 rounded-md px-3 py-1 text-sm transition-all m-[1px] text-white">
+                    <button v-if="document.approved" @click.prevent="Inertia.get(route('document.revisions', document.id))" class="bg-emerald-600 hover:bg-emerald-700 rounded-md px-3 py-1 text-sm transition-all m-[1px] text-white">
                       <div class="flex items-center space-x-1">
                         <Icon src="list" />
                         <p class="uppercase font-semibold">{{ __('revisions') }}</p>
                       </div>
                     </button>
 
-                    <button v-if="document.approved ? false : (document.rejected ? false : !document.pending)" @click.prevent="Inertia.get(route('document.approvers', document.id))" class="bg-orange-600 hover:bg-orange-700 rounded-md px-3 py-1 text-sm transition-all m-[1px] text-white">
+                    <button v-if="document.approve ? false : (document.approved ? false : (document.rejected ? false : !document.pending))" @click.prevent="Inertia.get(route('document.approvers', document.id))" class="bg-orange-600 hover:bg-orange-700 rounded-md px-3 py-1 text-sm transition-all m-[1px] text-white">
                       <div class="flex items-center space-x-1">
                         <Icon src="user-cog" />
                         <p class="uppercase font-semibold">{{ __('approvers') }}</p>
