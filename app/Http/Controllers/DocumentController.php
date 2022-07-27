@@ -307,6 +307,7 @@ class DocumentController extends Controller
     {
         $user = $request->user();
         $approve = $document->approve;
+        $approvers = $document->approvers;
 
         if (!$approve) {
             return redirect()->back()->with('error', __(
@@ -325,10 +326,28 @@ class DocumentController extends Controller
                 'document is already approved',
             ));
         }
+
+        if (!$user->hasRole('superuser')) {
+            if ($current = $approvers->where('user_id', $user->id)->first()) {
+                if (($before = $approvers->where('position', $current->position - 1)->first()) && ($latest = $approve->approvals->where('responder_id', $before->user_id)->first())) {
+                    if ($latest->status !== 'approved') {
+                        return redirect()->back()->with('error', __(
+                            'user `:name` haven\'t response the approval', [
+                                'name' => $latest->responder->name,
+                            ]
+                        ));
+                    }
+                }
+            } else {
+                return redirect()->back()->with('error', __(
+                    'can\'t find approval for you',
+                ));
+            }
+        }
         
-        $approval = $approve->approvals()
+        $approval = $approve->approvals
                             ->where('status', 'pending')
-                            ->when(!$user->hasRole('superuser'), function (Builder $query) use ($user) {
+                            ->when(!$user->hasRole('superuser'), function ($query) use ($user) {
                                 $query->where('responder_id', $user->id);
                             })
                             ->first();
@@ -365,6 +384,7 @@ class DocumentController extends Controller
 
         $user = $request->user();
         $approve = $document->approve;
+        $approvers = $document->approvers;
 
         if (!$approve) {
             return redirect()->back()->with('error', __(
@@ -382,6 +402,24 @@ class DocumentController extends Controller
             return redirect()->back()->with('info', __(
                 'document is already approved',
             ));
+        }
+
+        if (!$user->hasRole('superuser')) {
+            if ($current = $approvers->where('user_id', $user->id)->first()) {
+                if (($before = $approvers->where('position', $current->position - 1)->first()) && ($latest = $approve->approvals->where('responder_id', $before->user_id)->first())) {
+                    if ($latest->status !== 'approved') {
+                        return redirect()->back()->with('error', __(
+                            'user `:name` haven\'t response the approval', [
+                                'name' => $latest->responder->name,
+                            ]
+                        ));
+                    }
+                }
+            } else {
+                return redirect()->back()->with('error', __(
+                    'can\'t find approval for you',
+                ));
+            }
         }
         
         $approval = $approve->approvals()
